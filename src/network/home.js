@@ -30,12 +30,7 @@ export function addUser(object) {
     return request1({
         url: '/users',
         method: 'post',
-        data: {
-            username: object.username,
-            password: object.password,
-            email: object.email,
-            mobile: object.mobile
-        }
+        data: object
     })
 }
 
@@ -56,5 +51,80 @@ export function deleteUser(id) {
     return request1({
         url: `/users/${id}`,
         method: 'delete',
+    })
+}
+
+// 分配用户角色
+export function allotRole(userId, roleId) {
+    return request1({
+        url: `/users/${userId}/role`,
+        method: 'put',
+        data: {
+            rid: roleId
+        }
+    })
+}
+
+// 所有权限列表
+export function getPowerList(type) {
+    return request1({
+        url: `/rights/${type}`,
+        method: 'get',
+    })
+}
+
+// 角色列表
+export function getRolesList() {
+    return request1({
+        url: `/roles`,
+        method: 'get',
+    })
+}
+
+// 添加角色
+export function addRoles(object) {
+    return request1({
+        url: '/roles',
+        method: 'post',
+        data: object
+    })
+}
+
+//编辑提交角色
+export function editRoles(object) {
+    return request1({
+        url: `/roles/${object.id}`,
+        method: 'put',
+        data: {
+            roleName: object.roleName,
+            roleDesc: object.roleDesc
+        }
+    })
+}
+
+// 删除角色
+export function deleteRoles(id) {
+    return request1({
+        url: `/roles/${id}`,
+        method: 'delete',
+    })
+}
+
+// 删除角色指定的权限
+export function deleteRoleRight(roleId, rightId) {
+    return request1({
+        url: `/roles/${roleId}/rights/${rightId}`,
+        method: 'delete',
+    })
+}
+
+// 角色授权
+export function allotRight(roleId, rids) {
+    return request1({
+        url: `/roles/${roleId}/rights`,
+        method: 'post',
+        data: {
+            rids: rids
+        }
     })
 }

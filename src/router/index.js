@@ -5,10 +5,16 @@ const Login = () =>
     import ('views/login/Login')
 const Home = () =>
     import ('views/home/Home')
-const UserList = () =>
-    import ('views/home/homeChildComps/userManage/UserList')
 const Welcome = () =>
     import ('views/home/homeChildComps/Welcome')
+const UserList = () =>
+    import ('views/home/homeChildComps/userManage/UserList')
+const RolesList = () =>
+    import ('views/home/homeChildComps/powerManage/RolesList')
+const PermissionList = () =>
+    import ('views/home/homeChildComps/powerManage/PermissionList')
+
+
 
 
 
@@ -22,8 +28,10 @@ const routes = [
         component: Home,
         redirect: '/welcome',
         children: [
+            { path: '/welcome', component: Welcome },
             { path: '/users', component: UserList },
-            { path: '/welcome', component: Welcome }
+            { path: '/roles', component: RolesList },
+            { path: '/rights', component: PermissionList }
         ]
     },
 ]
@@ -40,10 +48,20 @@ router.beforeEach((to, from, next) => {
         return next();
     };
     const tokenData = sessionStorage.getItem('token');
+    const active = sessionStorage.getItem('activeIndex');
     if (!tokenData) {
         return next('/login');
     };
+    if (to.path === '/welcome' && active) {
+        sessionStorage.removeItem('activeIndex');
+        setTimeout(() => {
+            window.location.reload()
+        }, 0);
+        console.log(11);
+        // window.location.reload()
+    }
     next();
+    // window.location.reload()
 })
 
 export default router

@@ -28,11 +28,11 @@
         :max-height="700"
         class="table">
         <el-table-column type="index"></el-table-column>
-        <el-table-column label="姓名" width="180" prop="username"></el-table-column>
-        <el-table-column label="邮箱" width="180" prop="email"></el-table-column>
-        <el-table-column label="电话" width="180" prop="mobile"></el-table-column>
-        <el-table-column label="角色" width="180" prop="role_name"></el-table-column>
-        <el-table-column label="状态" width="180">
+        <el-table-column label="姓名" prop="username"></el-table-column>
+        <el-table-column label="邮箱" prop="email"></el-table-column>
+        <el-table-column label="电话" prop="mobile"></el-table-column>
+        <el-table-column label="角色" prop="role_name"></el-table-column>
+        <el-table-column label="状态">
           <!-- 这里作用域插槽可以获取到当前行的所有内容 -->
           <template slot-scope="scope">
             <!-- <span>{{scope.row}}</span> -->
@@ -57,7 +57,7 @@
             @click.native="deleteRow(scope.row.id)"></el-button>
             <!-- 分配按钮 -->
             <el-tooltip class="item" effect="dark" content="分配角色" placement="top" :enterable="false">
-              <el-button type="warning" icon="el-icon-setting" size="mini"></el-button>
+              <el-button type="warning" icon="el-icon-setting" size="mini" @click="allotRoleBlock(scope.row)"></el-button>
             </el-tooltip>
           </el-row>
           </template>
@@ -125,12 +125,37 @@
         </span>
       </el-dialog>
 
+      <!-- 分配角色对话框 -->
+      <el-dialog
+        title="分配角色"
+        :visible.sync="allotRoleFlag"
+        width="50%"
+        >
+        <p><span>当前的用户：</span><span>{{currentUser}}</span></p>
+        <p><span>当前的角色：</span><span>{{currentRole}}</span></p>
+        <div>
+          <span>分配新角色：</span>
+          <el-select v-model="value1" placeholder="请选择" ref="roleSelect">
+            <el-option
+              v-for="item in options"
+              :key="item.id"
+              :label="item.roleName"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </div>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="allotRoleFlag = false">取 消</el-button>
+          <el-button type="primary" @click="allotRoleRequest">确 定</el-button>
+        </span>
+      </el-dialog>
+
     </el-card>
   </div>
 </template>
 
 <script>
-import { getUserList,changeUserState, addUser,changeUserData,deleteUser } from 'network/home'
+import { getUserList,changeUserState, addUser,changeUserData,deleteUser,getRolesList,allotRole } from 'network/home'
 
 export default {
   name: 'userlist',
@@ -164,6 +189,10 @@ export default {
       // 访问对象属性值的方法有两种：1、点的方式：object.name  但是这里的name必须是对象存在的属性 不能是变量或者函数参数
       // 2、[]的方式：object[name] name可以是变量或者函数参数
       tableData: [],
+      currentUser: '', // 当前分配角色的用户名
+      currentRole: '', // 当前分配角色的用户的角色
+      currentRow: {}, // 当前分配角色的对象
+      roleId: 0, // 被选中的角色id
       // 请求用户数据列表的参数
       parameter: {
         query: '', //query是用来搜索用的
@@ -173,6 +202,7 @@ export default {
       total: 0,  // 总共有多少条数据
       visibleFlag: false, // 添加用户对话框显示变量
       ChangeDataFlag: false, //修改用户对话框的显示变量
+      allotRoleFlag: false, //分配角色对话框的显示变量
       // 添加用户的信息
       addForm: {
         username: '',
@@ -180,6 +210,10 @@ export default {
         mobile: '',
         email: ''
       },
+      // 分配角色对话框select里面option数组
+      options: [],
+      // select的value值
+      value1: '',
       // 添加用户的验证规则
       addRules: {
         username: [
@@ -289,10 +323,26 @@ export default {
         return this.$message.info('已经取消删除')
       }
       this.deleteUser1(id)
-
-
-
       // table.splice(index,1)
+    },
+    // 请求角色列表
+    async getRolesList1() {
+      const res = await getRolesList();
+      console.log(res);
+      if(res.meta.status !== 200) {
+        return this.$message.error('请求角色列表失败');}
+      this.options = res.data;
+    },
+    // 分配角色
+    async allotRole1(userId,roleId) {
+      const res = await allotRole(userId,roleId);
+      console.log(res);
+      if(res.meta.status !== 200) {
+        return this.$message.error('分配角色失败');}
+      // 重新请求数据列表
+      this.getUserList1(this.parameter)
+      // 重置当前分配角色对象的角色
+      // this.currentRow.role_name = this.value1;
     },
     // 监听每一页数据个数的改变 size-change
     handleSizeChange(val) {
@@ -343,15 +393,41 @@ export default {
         if(!value) {
           return this.$message.error('校验未通过')
         }
-        // 隐藏对话框
-        this.ChangeDataFlag = false;
         // this.$message.success('校验通过');
         this.changeUserData1(this.changeUserData)
+        // 隐藏对话框
+        this.ChangeDataFlag = false;
       })
     },
     // 修改用户对话框关闭时候执行重置表单
     changeDialogClosed() {
       this.$refs.ruleChangeData.resetFields()
+    },
+    // 显示分配角色对话框
+    allotRoleBlock(row) {
+      // 保存当前行对象
+      this.currentRow = row;
+      // 保存当前分配角色的userid
+      // this.currentUserId = row.id;
+      //  请求所有角色列表
+      this.getRolesList1()
+      this.currentUser = row.username;
+      this.currentRole = row.role_name;
+      this.allotRoleFlag = true;
+    },
+    // 分配角色请求
+    allotRoleRequest() {
+      // 隐藏分配角色对话框
+      this.allotRoleFlag = false;
+      if(!this.value1) {
+        return this.$message.error('请选择用户新角色');
+      };
+      console.log(this.value1);
+      let roleId = this.value1;
+      this.allotRole1(this.currentRow.id,roleId);
+      this.value1 = '';
+      console.log(roleId);
+      console.log(this.currentRow.id);
     }
   }
 }

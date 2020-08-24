@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import HomeAside from './homeChildComps/HomeAside'
+import HomeAside from './homeChildComps/aside/HomeAside'
 
 import { getMeunList } from 'network/home'
 

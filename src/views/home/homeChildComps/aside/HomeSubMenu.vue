@@ -8,7 +8,7 @@
     <!-- 二级菜单 -->
     <el-menu-item :index="'/' + item.path" v-for="item in submenuData.children" 
     :key="item.id"
-    @click="setIndex('/' + item.path)">
+    @click="saveIndex('/' + item.path)">
       <i class="el-icon-menu"></i>
       <span slot="title">{{item.authName}}</span>
     </el-menu-item>  
@@ -22,11 +22,10 @@ export default {
     submenuData: Object
   },
   methods: {
-    setIndex(index) {
+    saveIndex(index) {
       sessionStorage.setItem('activeIndex',index)
     }
   }
- 
 }
 
 </script>

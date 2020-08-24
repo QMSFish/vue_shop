@@ -18,7 +18,7 @@
 </template>
  
 <script>
-import HomeSubMenu from '../HomeSubMenu'
+import HomeSubMenu from './HomeSubMenu'
 export default {
   name: 'homeaside',
   data() {
