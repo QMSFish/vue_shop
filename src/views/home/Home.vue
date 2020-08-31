@@ -80,7 +80,7 @@ export default {
 <style lang="less" scoped>
   .home_container {
     /* 让容器撑满整个页面 */
-    height: 100%;
+    height: 100vh;
   }
   .home_head {
     display: flex;
@@ -113,6 +113,10 @@ export default {
     cursor: pointer;
   }
   .home_main {
+
     background-color: #e9edf0;
+    // height: calc(100% - 60px);
+    // overflow: auto;
+
   }
 </style>

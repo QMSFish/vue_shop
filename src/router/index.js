@@ -13,6 +13,18 @@ const RolesList = () =>
     import ('views/home/homeChildComps/powerManage/RolesList')
 const PermissionList = () =>
     import ('views/home/homeChildComps/powerManage/PermissionList')
+const GoodsList = () =>
+    import ('views/home/homeChildComps/goodsManage/GoodsList')
+const ClassifyParameter = () =>
+    import ('views/home/homeChildComps/goodsManage/ClassifyParameter')
+const GoodsClassify = () =>
+    import ('views/home/homeChildComps/goodsManage/GoodsClassify')
+const AddGoods = () =>
+    import ('views/home/homeChildComps/goodsManage/AddGoods')
+const OrderList = () =>
+    import ('views/home/homeChildComps/orderManage/OrderList')
+const DataReport = () =>
+    import ('views/home/homeChildComps/statistics/DataReport')
 
 
 
@@ -31,7 +43,13 @@ const routes = [
             { path: '/welcome', component: Welcome },
             { path: '/users', component: UserList },
             { path: '/roles', component: RolesList },
-            { path: '/rights', component: PermissionList }
+            { path: '/rights', component: PermissionList },
+            { path: '/goods', component: GoodsList },
+            { path: '/params', component: ClassifyParameter },
+            { path: '/categories', component: GoodsClassify },
+            { path: '/add', component: AddGoods },
+            { path: '/orders', component: OrderList },
+            { path: '/reports', component: DataReport }
         ]
     },
 ]

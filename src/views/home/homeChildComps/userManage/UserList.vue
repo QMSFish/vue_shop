@@ -434,12 +434,6 @@ export default {
 
 </script>
 <style scoped>
-  .box-card {
-    /* height: 400px; */
-    margin-top: 15px;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .1);
-
-  }
   .input_serch {
     width: 400px;
     margin-right: 20px;
@@ -448,6 +442,5 @@ export default {
     width: 100%;
     margin-top: 15px;
     margin-bottom: 10px;
-
   }
 </style>
