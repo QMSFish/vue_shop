@@ -70,6 +70,7 @@ router.beforeEach((to, from, next) => {
     if (!tokenData) {
         return next('/login');
     };
+    // 点击返回首页地址
     if (to.path === '/welcome' && active) {
         sessionStorage.removeItem('activeIndex');
         setTimeout(() => {
